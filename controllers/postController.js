@@ -7,9 +7,8 @@ const post = require("../model/postModel");
 exports.getAllposts = async (req, res) => {
   try {
     const posts = await post.find();
-    
-
-    res.status(200).json({
+  
+    return res.status(200).json({
       status: "success",
       results: posts.length,
       data: {
@@ -17,7 +16,7 @@ exports.getAllposts = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(404).json({
+    return res.status(404).json({
       status: "fail",
       message: err,
     });

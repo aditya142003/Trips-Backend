@@ -6,6 +6,10 @@ const postSchema = new mongoose.Schema({
     // required: true,
     unique: true,
   },
+  img: {
+    data: [Buffer],
+    contentType: String,
+  },
   caption: {
     type: String,
   },
@@ -56,9 +60,7 @@ const postSchema = new mongoose.Schema({
         },
       ],
     },
-    // image:{},
   ],
-    
 });
 
 const post = mongoose.model("Post", postSchema);

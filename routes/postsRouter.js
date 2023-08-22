@@ -6,13 +6,20 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(authController.protect, postController.getAllposts)
+  .get(postController.getAllposts)
   .post(postController.createpost);
 
+router.use(authController.protect);
 router
   .route("/:id")
   .get(postController.getpost)
   .patch(postController.updatepost)
-  .delete(postController.deletepost);
+  .delete(
+    authController.restrictTo("admin", "lead-guide"),
+    postController.deletepost
+  );
+router.all("*", (req, res, next) => {
+  res.end("404 ERROR PAGE");
+});
 
 module.exports = router;
