@@ -49,9 +49,9 @@ exports.resizeUserPhoto = async (req, res, next) => {
   if (!req.file) return next();
 
   await sharp(req.file.buffer)
-    .resize(100, 100)
+    .resize(1000, 1000)
     .toFormat("jpeg")
-    .jpeg({ quality: 90 })
+    .jpeg({ quality: 100 })
     .toBuffer()
     .then(function(outbuff) {
       req.file.buffer = outbuff;
@@ -72,14 +72,38 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.getAllUsers = async (req, res, next) => {
-  const users = await User.find();
-  res.status(200).json({
-    status: "success",
-    result: users.length,
-    data: {
-      users,
-    },
-  });
+  try {
+    const users = await User.find();
+    return res.status(200).json({
+      status: "success",
+      result: users.length,
+      data: {
+        users,
+      },
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
+};
+
+exports.getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    return res.status(200).json({
+      status: "success",
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    return res.status(404).json({
+      status: "fail",
+      message: err,
+    });
+  }
 };
 
 exports.getImg = async (req, res, next) => {
@@ -112,12 +136,17 @@ exports.updateMe = async (req, res, next) => {
       contentType: "image/png",
     };
   }
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidator: true,
-  });
+  const updatedUser = await User.findByIdAndUpdate(
+    "64e450d22d517d2ba4e06f09",
+    filteredBody,
+    {
+      new: true,
+      runValidator: true,
+    }
+  );
   req.user = updatedUser;
-  res.status(200).json({
+  console.log(updatedUser);
+  return res.status(200).json({
     status: "success",
     data: {
       user: updatedUser,

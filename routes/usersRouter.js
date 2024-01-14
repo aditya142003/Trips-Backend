@@ -12,7 +12,9 @@ router.patch("/resetPassword/:token", authController.resetPassword);
 
 router.use(authController.protect);
 
-router.get("/", userController.getAllUsers);
+router.route("/").get(userController.getAllUsers);
+
+router.route("/:id").get(userController.getUser);
 
 router.patch("/updateMyPassword", authController.updatePassword);
 router.patch(
@@ -22,5 +24,9 @@ router.patch(
   userController.updateMe
 );
 router.delete("/deleteMe", userController.deleteMe);
+
+router.all("*", (req, res, next) => {
+  res.end("404 ERROR PAGE");
+});
 
 module.exports = router;

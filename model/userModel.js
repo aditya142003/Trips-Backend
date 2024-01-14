@@ -37,20 +37,6 @@ const userSchema = mongoose.Schema({
     minlength: 8,
     select: false,
   },
-  passwordConfirm: {
-    type: String,
-    required: [true, "Confirm Password is required"],
-    validate: {
-      //Only works on create() or save()
-      validator: function(el) {
-        return el === this.password;
-      },
-      message: "Password are not same",
-    },
-  },
-  passwordChangedAt: {
-    type: Date,
-  },
   passwordResetToken: String,
   passwordResetExpires: Date,
   active: {
@@ -64,7 +50,6 @@ userSchema.pre("save", async function(next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
-  this.passwordConfirm = undefined;
   next();
 });
 

@@ -4,12 +4,12 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+router.use(authController.protect);
 router
   .route("/")
   .get(postController.getAllposts)
   .post(postController.createpost);
 
-router.use(authController.protect);
 router
   .route("/:id")
   .get(postController.getpost)
@@ -18,6 +18,7 @@ router
     authController.restrictTo("admin", "lead-guide"),
     postController.deletepost
   );
+
 router.all("*", (req, res, next) => {
   res.end("404 ERROR PAGE");
 });

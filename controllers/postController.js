@@ -50,14 +50,14 @@ exports.getpost = async (req, res) => {
     const onePost = await post.findById(req.params.id);
     console.log(onePost)
 
-    res.status(200).json({
+    return res.status(200).json({
       status: "success",
       data: {
         onePost,
       },
     });
   } catch (err) {
-    res.status(404).json({
+    return res.status(404).json({
       status: "fail",
       message: err,
     });

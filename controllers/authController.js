@@ -16,9 +16,18 @@ exports.signup = async (req, res, next) => {
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt,
   });
+
+  // const message = `Dear ${req.body.username},\n${JSON.stringify(welcomeMsg)}`;
+  //   if (process.env.NODE_ENV == 'prod') {
+  //       await sendEmail({
+  //           email: req.body.email,
+  //           subject: 'Welcome to Trips',
+  //           message,
+  //       });
+  //   } else {
+  //       console.log(`user: ${req.body.username} created!`);
+  //   }
 
   const token = signToken(newUser._id);
   res.cookie("jwt", token, { httpOnly: false, secure: false });
@@ -57,6 +66,7 @@ exports.login = async (req, res, next) => {
   res.cookie("jwt", token, { httpOnly: false, secure: false });
   return res.status(200).json({
     status: "success",
+    user,
     token,
   });
 };
@@ -151,8 +161,6 @@ exports.forgotPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   // 1)Get user based on user
   const password = req.body.password;
-  const passwordConfirm = req.body.passwordConfirm;
-  console.log(password, passwordConfirm);
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -173,7 +181,6 @@ exports.resetPassword = async (req, res, next) => {
 
   // 3)Update changed password porperty for user
   user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
@@ -202,7 +209,6 @@ exports.updatePassword = async (req, res, next) => {
 
   //3)Update pass
   user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
   user.passwordChangedAt = Date.now();
   await user.save();
 
@@ -214,6 +220,3 @@ exports.updatePassword = async (req, res, next) => {
     token,
   });
 };
-
-// "password":"newPass123"
-// "password":"pass1234"
